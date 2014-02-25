@@ -1,8 +1,8 @@
 {
-    "name": "cftp/widget-import",
-    "description": "Import and Export Sidebars",
+	"name": "cftp/widget-import",
+	"description": "Import and Export Sidebars",
 	"minimum-stability": "stable",
-    "license": "GPL-2.0+",
+	"license": "GPL-2.0+",
 	"type": "wordpress-plugin",
 	"authors": [
 		{
