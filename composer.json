@@ -1,0 +1,16 @@
+{
+    "name": "cftp/widget-import",
+    "description": "Import and Export Sidebars",
+	"minimum-stability": "stable",
+    "license": "GPL-2.0+",
+	"type": "wordpress-plugin",
+	"authors": [
+		{
+			"name": "Code For The People"
+		}
+	],
+	"require": {
+		"composer/installers": "~1.0",
+		"php": ">=5.3"
+	}
+}
