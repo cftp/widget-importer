@@ -85,31 +85,35 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			$data = json_decode( trim( $json ), true, 1500 );
 			if ( ! is_array( $data ) ) {
 				WP_CLI::error( 'Unexpected input' );
-			}
-			if ( ! isset( $data['sidebars'] ) ) {
+				return;
+			} else if ( ! isset( $data['sidebars'] ) ) {
 				WP_CLI::error( 'Unexpected input, no sidebars' );
-			}
-			if ( ! isset( $data['widget_options'] ) ) {
+				return;
+			} else if ( ! isset( $data['widget_options'] ) ) {
 				WP_CLI::error( 'Unexpected input, no widget options' );
-			}
-			$sidebars       = $data['sidebars'];
-			$widget_options = $data['widget_options'];
+				return;
+			} else {
+				$sidebars       = $data['sidebars'];
+				$widget_options = $data['widget_options'];
 
-			foreach ( $widget_options as $widget_name => $value ) {
-				$current_value = get_option( $widget_name );
-				if ( $current_value == $value ) {
-					continue;
+				foreach ( $widget_options as $widget_name => $value ) {
+					$current_value = get_option( $widget_name );
+					if ( $current_value == $value ) {
+						continue;
+					}
+					if ( ! update_option( $widget_name, $value ) ) {
+						WP_CLI::error( "Could not update widget option '$widget_name'.", false ); // continue run
+					} else {
+						WP_CLI::success( "Updated options '$widget_name'." );
+					}
 				}
-				if ( ! update_option( $widget_name, $value ) ) {
-					WP_CLI::error( "Could not update option '$widget_name'.", false ); // continue run
+
+				$updated = update_option( 'sidebars_widgets', $sidebars );
+				if ( $updated ) {
+					WP_CLI::success( 'Sidebar options updated' );
 				} else {
-					WP_CLI::success( "Updated options '$widget_name'." );
+					WP_CLI::error( 'Sidebar options failed' );
 				}
-			}
-
-			$updated = update_option( 'sidebars_widgets', $sidebars );
-			if ( $updated ) {
-				WP_CLI::success( 'Sidebar options updated' );
 			}
 		}
 
