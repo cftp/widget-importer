@@ -31,19 +31,10 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 		/**
 		 * export sidebar options
-		 *
-		 * @synopsis [--json]
 		 */
 		public function export_sidebars( $args, $assoc_args ) {
 			$assoc_args['format'] = 'json';
-			$temp_sidebars_array  = get_option( 'sidebars_widgets' );
-			$sidebars_array       = array();
-			// don't include empty sidebars
-			foreach ( $temp_sidebars_array as $key => $value ) {
-				if ( ! empty( $value ) ) {
-					$sidebars_array[$key] = $value;
-				}
-			}
+			$sidebars_array  = get_option( 'sidebars_widgets' );
 			$widgets = array_values( $sidebars_array );
 			$tmp     = array();
 			foreach ( $widgets as $widget_list ) {
@@ -69,7 +60,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				'sidebars'       => $sidebars_array,
 				'widget_options' => $widget_options,
 			);
-			echo json_encode( $export );
+			echo base64_encode( serialize( $export ) );
 		}
 
 		public function import_sidebars( $args, $assoc_args ) {
@@ -77,43 +68,33 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			if ( ! empty( $assoc_args['data'] ) ) {
 				$file = $assoc_args['data'];
 			}
-			$json = file_get_contents( $file );
-			if ( empty( $json ) ) {
+			$contents = file_get_contents( $file );
+			if ( empty( $contents ) ) {
 				WP_CLI::error( 'failed to read input' );
 			}
 
-			$data = json_decode( trim( $json ), true, 1500 );
-			if ( ! is_array( $data ) ) {
-				WP_CLI::error( 'Unexpected input' );
-				return;
-			} else if ( ! isset( $data['sidebars'] ) ) {
-				WP_CLI::error( 'Unexpected input, no sidebars' );
-				return;
-			} else if ( ! isset( $data['widget_options'] ) ) {
-				WP_CLI::error( 'Unexpected input, no widget options' );
-				return;
-			} else {
-				$sidebars       = $data['sidebars'];
-				$widget_options = $data['widget_options'];
+			$data = unserialize( trim( base64_decode( $contents ) ) );
 
-				foreach ( $widget_options as $widget_name => $value ) {
-					$current_value = get_option( $widget_name );
-					if ( $current_value == $value ) {
-						continue;
-					}
-					if ( ! update_option( $widget_name, $value ) ) {
-						WP_CLI::error( "Could not update widget option '$widget_name'.", false ); // continue run
-					} else {
-						WP_CLI::success( "Updated options '$widget_name'." );
-					}
+			$sidebars       = $data['sidebars'];
+			$widget_options = $data['widget_options'];
+
+			foreach ( $widget_options as $widget_name => $value ) {
+				$current_value = get_option( $widget_name );
+				if ( $current_value == $value ) {
+					continue;
 				}
-
-				$updated = update_option( 'sidebars_widgets', $sidebars );
-				if ( $updated ) {
-					WP_CLI::success( 'Sidebar options updated' );
+				if ( ! update_option( $widget_name, $value ) ) {
+					WP_CLI::error( "Could not update widget option '$widget_name'.", false ); // continue run
 				} else {
-					WP_CLI::error( 'Sidebar options failed' );
+					WP_CLI::success( "Updated options '$widget_name'." );
 				}
+			}
+
+			$updated = update_option( 'sidebars_widgets', $sidebars );
+			if ( $updated ) {
+				WP_CLI::success( 'Sidebar options updated' );
+			} else {
+				WP_CLI::error( 'Sidebar options failed' );
 			}
 		}
 
