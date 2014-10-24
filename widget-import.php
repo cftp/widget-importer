@@ -15,20 +15,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	 */
 	class Sidebar_Import_Export extends Sidebar_Command {
 
-		public function list_sidebars( $args, $assoc_args ) {
-			$sidebars_array = get_option( 'sidebars_widgets' );
-
-			$data = array();
-			foreach ( $sidebars_array as $location => $widgets ) {
-				$data[] = array( $location, is_array( $widgets ) ? implode( ', ', $widgets ) : '' );
-			}
-
-			$table = new \cli\Table();
-			$table->setHeaders( array( 'Location', 'Widgets' ) );
-			$table->setRows( $data );
-			$table->display();
-		}
-
 		/**
 		 * export sidebar options
 		 */
