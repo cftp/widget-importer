@@ -13,7 +13,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	 *
 	 * @package wp-cli
 	 */
-	class Sidebar_Import_Export extends Sidebar_Command {
+	class Sidebars_Command extends WP_CLI_Command {
 
 		/**
 		 * export sidebar options
@@ -86,4 +86,5 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 	}
 
+    WP_CLI::add_command( 'sidebars', 'Sidebars_Command' );
 }
