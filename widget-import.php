@@ -13,7 +13,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	 *
 	 * @package wp-cli
 	 */
-	class Widget_Command extends WP_CLI_Command {
+	class Sidebar_Import_Export extends Sidebar_Command {
 
 		public function list_sidebars( $args, $assoc_args ) {
 			$sidebars_array = get_option( 'sidebars_widgets' );
@@ -100,5 +100,4 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 	}
 
-	WP_CLI::add_command( 'widget', 'Widget_Command' );
 }
