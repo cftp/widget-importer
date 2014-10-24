@@ -18,7 +18,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		/**
 		 * export sidebar options
 		 */
-		public function export_sidebars( $args, $assoc_args ) {
+		public function export( $args, $assoc_args ) {
 			$assoc_args['format'] = 'json';
 			$sidebars_array  = get_option( 'sidebars_widgets' );
 			$widgets = array_values( $sidebars_array );
@@ -49,7 +49,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			echo base64_encode( serialize( $export ) );
 		}
 
-		public function import_sidebars( $args, $assoc_args ) {
+		public function import( $args, $assoc_args ) {
 			$file = 'php://stdin';
 			if ( ! empty( $assoc_args['data'] ) ) {
 				$file = $assoc_args['data'];
