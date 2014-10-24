@@ -5,7 +5,7 @@ Based on code by [Gkurtyka Schibsted](https://github.com/gkurtyka-schibsted/wp-c
 ## Usage
 
 ```
-wp widget export_sidebars > widgets.json
+wp sidebars export > sidebars.tmp
 
-cat widgets.json | wp widget import_sidebars
+cat sidebars.tmp | wp sidebars import
 ```
